@@ -10,7 +10,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./dist/Main.js",
     "build": "rm -rf dist && tsc",
-    "prepublishOnly": "npm version patch && npm run build"
+    "prepublishOnly": "npm version patch && npm run build",
+    "postpublish": "git push"
   },
   "author": "terran.tian",
   "license": "ISC",
