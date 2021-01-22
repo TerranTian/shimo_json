@@ -1,0 +1,24 @@
+{
+  "name": "shimo_json",
+  "version": "1.0.11",
+  "description": "convert shimo excel to json",
+  "bin": {
+    "shimo_json": "./cli.js"
+  },
+  "index": "./dist/Main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./dist/Main.js",
+    "build": "rm -rf dist && tsc",
+    "prepublishOnly": "npm version patch && npm run build"
+  },
+  "author": "terran.tian",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^9.3.0",
+    "axios": "^0.19.0",
+    "download": "^7.1.0",
+    "node-xlsx": "^0.15.0",
+    "request": "^2.88.0"
+  }
+}
