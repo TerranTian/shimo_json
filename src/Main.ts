@@ -85,5 +85,7 @@ if(!cookie || !fileId || !out){
         delete data.types;
         fs.writeFileSync(out,JSON.stringify(data));
     }
+
+    console.log("export done:",out);
 }();
 
