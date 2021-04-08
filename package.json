@@ -5,7 +5,8 @@
   "bin": {
     "shimo_json": "./cli.js"
   },
-  "index": "./dist/Main.js",
+  "main": "./dist/Shimo.js",
+  "types":"./dist/Shimo.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./dist/Main.js",
