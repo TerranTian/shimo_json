@@ -1,12 +1,12 @@
 {
   "name": "shimo_json",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "convert shimo excel to json",
   "bin": {
-    "shimo_json": "./cli.js"
+    "shimo_json": "cli.js"
   },
   "main": "./dist/Shimo.js",
-  "types":"./dist/Shimo.d.ts",
+  "types": "./dist/Shimo.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./dist/Main.js",
