@@ -1,6 +1,6 @@
 {
   "name": "shimo_json",
-  "version": "1.0.18",
+  "version": "1.0.19",
   "description": "convert excel to json, inclue excel from shimo",
   "bin": {
     "excel2json": "cli.js"
