@@ -1,7 +1,7 @@
 
 import * as path from "path";
 import * as fs from "fs";
-import { parse_shimo } from "./Shimo";
+import { parse_shimo } from "./core/Shimo";
 import { exit } from "process";
 
 let dir = path.dirname(process.argv[1]);
