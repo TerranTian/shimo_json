@@ -19,15 +19,11 @@ let dataRow = 2;
 let format="common";
 let out="";
 
-let from_shimo = false;
-let from_file=true;
 let file = "";
 
 while(parameters.length > 0){
     let value=parameters.shift();
     switch (value) {
-        case "--shimo":
-            from_shimo = true;
         case "-c":
         case "--cookie":
             cookie = parameters.shift();
@@ -46,7 +42,7 @@ while(parameters.length > 0){
             break;
         case "-d":
         case "--dataRow":
-            dataRow = +parameters.shift()||1;
+            dataRow = +parameters.shift()||2;
             break;
         case "-f":
         case "--format":
@@ -62,6 +58,7 @@ while(parameters.length > 0){
     }
 }
 
+let from_shimo = fileId || cookie;
 let err = !out;
 if(!err){
     if(from_shimo){
@@ -74,7 +71,6 @@ if(!err){
 if(err){
     let message = `
     wrong arguments:
-    --shimo: parse excel from shimo
     -c/--cookie: copy from one of shimo's request.
     -i/--fileId: shimo's document id: https://shimo.im/sheets/<docment id>/MODOC
     -n/--nameRow: the index of row for name, default:0
