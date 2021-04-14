@@ -1,39 +1,50 @@
-import axios from 'axios';
+// import axios from 'axios';
 import * as download from 'download';
 import { parse_excel_buffer } from './Excel';
 
+const fetch = require("node-fetch");
 async function downloadExcel(fileId, cookie) {
-    let type = 'xlsx';
-    const url = 'https://shimo.im/lizard-api/files/' + fileId + '/export';
+    // const url = 'https://shimo.im/lizard-api/files/' + fileId + '/export';
+    const url = 'https://xxport.shimo.im/files/' + fileId + '/export';
     
     console.log("exporting...:",url);
-    const response = await axios.get(url, {
-    params: {
-            type: type,
-            file: fileId,
-            returnJson: '1',
-            isAsync: '0',
-        },
-        headers: {
-            Cookie: cookie,
-            Referer: 'https://shimo.im/folder/123',
-        }
-    });
+    // let type = 'xlsx';
+    // const response = await axios.get(url, {
+    // params: {
+    //         type: type,
+    //         file: fileId,
+    //         returnJson: '1',
+    //         isAsync: '0',
+    //     },
+    //     headers: {
+    //         Cookie: cookie,
+    //         origin:"https://shimo.im",
+    //     }
+    // });
+    // let obj = response.data;
 
-    if (!response.data.redirectUrl) {
-        throw new Error(' failed, error: '+response.data);
+
+    let response = await fetch(`https://xxport.shimo.im/files/${fileId}/export?type=xlsx&file=${fileId}&returnJson=1&name=activity&isAsync=0`, {
+        headers: {
+            origin:"https://shimo.im",
+            "cookie": cookie
+        },
+        "body": null,
+        "method": "GET",
+    });
+    let obj = await response.json();
+    
+    // console.log("rrr",obj);
+    if (!obj.redirectUrl) {
+        throw new Error(' failed, error: '+obj);
     }
 
-    // return download(response.data.redirectUrl).then(data => {
-    //     fs.writeFileSync(item.name+'.xlsx', data);
-    // });
-
-    console.log("download...:",response.data.redirectUrl);
-    let data = await download(response.data.redirectUrl);
+    console.log("download...:",obj.redirectUrl);
+    let data = await download(obj.redirectUrl);
     return data;
 }
 
-export async function parse_shimo(fileId:string, cookie:string, config:{nameRow:number,typeRow:number,dataRow:number}):Promise<{keys:string[],types:string[],values:any[][]}> {
+export async function parse_shimo(fileId:string, cookie:string, config:IConfig):Promise<IResult> {
     let buffer = await downloadExcel(fileId,cookie);
     return parse_excel_buffer(buffer,config);
 };
