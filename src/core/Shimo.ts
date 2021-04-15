@@ -44,7 +44,7 @@ async function downloadExcel(fileId, cookie) {
     return data;
 }
 
-export async function parse_shimo(fileId:string, cookie:string, config:IConfig):Promise<IResult> {
+export async function parse_shimo(fileId:string, cookie:string, config:IConfig):Promise<IExcelData> {
     let buffer = await downloadExcel(fileId,cookie);
     return parse_excel_buffer(buffer,config);
 };

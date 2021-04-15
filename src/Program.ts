@@ -9,82 +9,66 @@ let dir = path.dirname(process.argv[1]);
 let parameters = process.argv.splice(2);
 
 
-let fileId:string = null;
-let cookie:string = null;
+let cookie: string = null;
 
 let nameRow = 0;
 let typeRow = 1;
 let desRow = 2;
 let dataRow = 3;
 
-let name = "";
-let out="";
+let out = "";
 
-let formater=null;
-let format="common";
-let file = "";
+let formater = null;
+let format = "common";
+let file:string[] = [];
 
-while(parameters.length > 0){
-    let value=parameters.shift();
+while (parameters.length > 0) {
+    let value = parameters.shift();
     switch (value) {
         case "-c":
         case "--cookie":
             cookie = parameters.shift();
             break;
-        case "-i":
-        case "--fileId":
-            fileId = parameters.shift();
-            break;
         case "-n":
         case "--nameRow":
-            nameRow = +parameters.shift()||0;
+            nameRow = +parameters.shift() || 0;
             break;
         case "-t":
         case "--typeRow":
-            typeRow = +parameters.shift()||1;
+            typeRow = +parameters.shift() || 1;
             break;
         case "--desRow":
-            desRow = +parameters.shift()||2;
+            desRow = +parameters.shift() || 2;
             break;
         case "-d":
         case "--dataRow":
-            dataRow = +parameters.shift()||3;
+            dataRow = +parameters.shift() || 3;
             break;
         case "-f":
         case "--format":
             format = parameters.shift() || "common";
             break;
         case "--formater":
-                formater = parameters.shift() || null;
-                break;
-        case "--name":
-            name = parameters.shift() || null;
+            formater = parameters.shift() || null;
             break;
         case "-o":
         case "--out":
             out = parameters.shift() || "";
             break;
         default:
-            file = value;
+            file.push(value);
             break;
     }
 }
 
-let from_shimo = fileId || cookie;
-let err = !out;
-if(!err){
-    if(from_shimo){
-        err = !cookie || !fileId;
-    }else{
-        err = !file;
-    }
-}
+let from_shimo = !!cookie;
+let err = !out || file.length == 0;
 
-if(err){
+if (err) {
     let message = `
     wrong arguments:
     -c/--cookie: copy from one of shimo's request.
-    -i/--fileId: shimo's document id: https://shimo.im/sheets/<docment id>/MODOC
+    -i/--fileId: 
     -n/--nameRow: the index of row for name, default:0
     -t/--typeRow: the index of row for type, default:1
     --desRow: the index of row for des, default:2
@@ -92,44 +76,49 @@ if(err){
     -f/--format: the json format, default:common, which with full key,[{key1:value1,key2:value2},{key1:value1,key2:value2}], otherwise [keys:[key1,key2],values:[[value1,value2],[value1,value2]]]
     -o/--out: out path
     --name: excel alias
-    --formater: an js module which export an function: parse(name:string,data:{keys:{key:string,type:string,des:string}[],values:any[][]}):string
-    file: excel path b.xlsx
+    --formater: an js module which export an function: parse(arr:{name:string,data:{keys:{key:string,type:string,des:string}[],values:any[][]}}[]):string
+    file: excel paths b.xlsx or shimo's document ids: https://shimo.im/sheets/<docment id>/MODOC
 `
     console.log(message);
     exit(1);
 }
 
-// if no name specified, use from out;
-name = name || path.basename(out).split(".")[0];
+!async function () {
+    let config = { nameRow: +nameRow, typeRow: +typeRow, dataRow: +dataRow, desRow: +desRow };
 
-!async function(){
-    let config = {nameRow:+nameRow,typeRow:+typeRow,dataRow:+dataRow,desRow:+desRow};
-    let data:IResult = null;
-    if(from_shimo){
-        data = await parse_shimo(fileId,cookie,config)
-    }else{
-        data = await parse_excel_file(file,config)
+    let arr = [];
+    for (let f of file) {
+        let data = null;
+        if (from_shimo) {
+            data = await parse_shimo(f, cookie, config)
+        }else{
+            data = await parse_excel_file(f, config)
+        }
+        let name = path.basename(out).split(".")[0];
+        arr.push({ name, data });
     }
 
-    if(formater){
+    if (formater) {
         let plug = require(formater);
-        let str = plug.parse(name,data);
-        fs.writeFileSync(out,str);
-    }else{
-        if(format == "common"){
-            let contents = [];
-            data.values.forEach(v=>{
-                let item = {};
-                v.forEach((v,index)=>{
-                    item[data.keys[index].key] = v;
-                })
-                contents.push(item);
-            })
-            fs.writeFileSync(out,JSON.stringify(contents));
+        let str = plug.parse(arr);
+        fs.writeFileSync(out, str);
+    } else {
+        if (format == "common") {
+            let reuslt = require("./format/CommonFormat").parse(arr);
+            fs.writeFileSync(out, reuslt);
+        } else if (format == "common_map") {
+            let reuslt = require("./format/CommonMapFormat").parse(arr);
+            fs.writeFileSync(out, reuslt);
+        } else if (format == "mini") {
+            let reuslt = require("./format/MiniFormat").parse(arr);
+            fs.writeFileSync(out, reuslt);
+        } else if (format == "mini_map") {
+            let reuslt = require("./format/MiniMapFormat").parse(arr);
+            fs.writeFileSync(out, reuslt);
         }else{
-            fs.writeFileSync(out,JSON.stringify(data));
+            throw "unknow format:"+format;
         }
     }
 
-    console.log("export done:",out);
+    console.log("export done:", out);
 }();
