@@ -94,8 +94,8 @@ if (err) {
         }else{
             data = await parse_excel_file(f, config)
         }
-        let name = path.basename(out).split(".")[0];
-        arr.push({ name, data });
+        // let name = path.basename(out).split(".")[0];
+        arr.push({ name:f, data });
     }
 
     if (formater) {
