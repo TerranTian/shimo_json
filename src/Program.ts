@@ -31,18 +31,18 @@ while (parameters.length > 0) {
             break;
         case "-n":
         case "--nameRow":
-            nameRow = +parameters.shift() || 0;
+            nameRow = +parameters.shift() ?? 0;
             break;
         case "-t":
         case "--typeRow":
-            typeRow = +parameters.shift() || 1;
+            typeRow = +parameters.shift() ?? 1;
             break;
         case "--desRow":
-            desRow = +parameters.shift() || 2;
+            desRow = +parameters.shift() ?? 2;
             break;
         case "-d":
         case "--dataRow":
-            dataRow = +parameters.shift() || 3;
+            dataRow = +parameters.shift() ?? 3;
             break;
         case "-f":
         case "--format":
