@@ -7,7 +7,7 @@ export function parse_excel_buffer(buffer:Buffer,config:IConfig){
     let data = sheets[0].data;
     let nameArr = data[config.nameRow];
     let typeArr = data[config.typeRow];
-    let desArr = data[config.desRow];
+    let desArr = data[config.desRow] || "";
     let rows = data.splice(config.dataRow);
 
     let keys = [];
