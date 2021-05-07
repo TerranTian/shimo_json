@@ -19,7 +19,7 @@ export function parse_excel_buffer(buffer:Buffer,config:IConfig){
         keys.push({
             key:name,
             type:typeArr[i] ?? "",
-            des:desArr[i]?desArr[i].replace("\n"," "):""
+            des:desArr[i]?(desArr[i]+"").replace("\n"," "):""
         });
     }
 
