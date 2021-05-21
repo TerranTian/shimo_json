@@ -2,7 +2,6 @@ import { readFileSync } from "fs";
 import xlrd from "node-xlsx";
 
 export function parse_excel_buffer(buffer:Buffer,config:IConfig){
-    console.log("parsing...");
     let sheets = xlrd.parse(buffer);
     let data = sheets[0].data;
     let nameArr = data[config.nameRow];
@@ -40,6 +39,7 @@ export function parse_excel_buffer(buffer:Buffer,config:IConfig){
 }
 
 export function parse_excel_file(path:string,config:IConfig){
+    console.log("parsing...:",path);
     let buffer = readFileSync(path);
     return parse_excel_buffer(buffer,config);
 }
