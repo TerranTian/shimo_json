@@ -61,14 +61,11 @@ while (parameters.length > 0) {
     }
 }
 
-let from_shimo = !!cookie;
 let err = !out || file.length == 0;
-
 if (err) {
     let message = `
     wrong arguments:
     -c/--cookie: copy from one of shimo's request.
-    -i/--fileId: 
     -n/--nameRow: the index of row for name, default:0
     -t/--typeRow: the index of row for type, default:1
     --desRow: the index of row for des, default:2
@@ -89,13 +86,19 @@ if (err) {
     let arr = [];
     for (let f of file) {
         let data = null;
-        if (from_shimo) {
+
+        let name = f.split("@")[1] || path.basename(f,".xlsx");
+        let isShimo = f.indexOf(".xlsx") == -1;
+        if (isShimo) {
+            if(!cookie){
+                console.log("Skiped: cookie required:",f);
+                continue;
+            }
             data = await parse_shimo(f, cookie, config)
         }else{
             data = await parse_excel_file(f, config)
         }
-        // let name = path.basename(out).split(".")[0];
-        arr.push({ name:f, data });
+        arr.push({ name:name, data ,file:f});
     }
 
     if (formater) {
