@@ -94,7 +94,7 @@ if (err) {
                 console.log("Skiped: cookie required:",f);
                 continue;
             }
-            data = await parse_shimo(f, cookie, config)
+            data = await parse_shimo(f.split("@")[0], cookie, config)
         }else{
             data = await parse_excel_file(f, config)
         }
