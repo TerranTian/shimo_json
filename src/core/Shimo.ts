@@ -36,7 +36,7 @@ async function downloadExcel(fileId, cookie) {
     
     // console.log("rrr",obj);
     if (!obj.redirectUrl) {
-        throw new Error(' failed, error: '+obj);
+        throw new Error(' failed, error: '+ JSON.stringify(obj) );
     }
 
     console.log("download...:",obj.redirectUrl);
