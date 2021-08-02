@@ -23,7 +23,7 @@ export function parse_excel_buffer(buffer:Buffer,config:IConfig){
     }
 
     for(let row of rows){
-        // if (!row[0]) break;
+        if (!row[0] && row[0] != 0) break;
         var rowValues = [];
         for (let i = 0; i < nameArr.length; ++i) {
             let name = nameArr[i];
